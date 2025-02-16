@@ -109,6 +109,7 @@ export default function AnalyzePage() {
         toast({
           title: "Image Uploaded",
           description: "Your image has been successfully uploaded.",
+          variant: "default",
         });
       }
     };
@@ -153,6 +154,7 @@ export default function AnalyzePage() {
       toast({
         title: "Analysis Complete",
         description: "Your plant analysis report is ready.",
+        variant: "default",
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -194,6 +196,7 @@ export default function AnalyzePage() {
       toast({
         title: "PDF Generated",
         description: "Your plant analysis PDF has been downloaded.",
+        variant: "default",
       });
     } catch (error) {
       console.error("Error downloading PDF:", error);

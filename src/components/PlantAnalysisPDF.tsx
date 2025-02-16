@@ -1,13 +1,13 @@
-import type React from "react";
 import {
   Document,
+  Font,
+  Image,
   Page,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  Image,
-  Font,
 } from "@react-pdf/renderer";
+import type React from "react";
 
 // We'll use a web-safe font that doesn't require loading external files
 Font.register({
@@ -34,26 +34,27 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 700,
     textAlign: "center",
     marginBottom: 20,
     color: "#2E7D32",
   },
   section: {
-    marginBottom: 15,
+    marginBottom: 6,
+    marginTop: 7,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 700,
-    marginBottom: 10,
+    marginBottom: 1,
     color: "#2E7D32",
     borderBottom: 1,
     borderBottomColor: "#e0e0e0",
     paddingBottom: 5,
   },
   content: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 8,
     lineHeight: 1.5,
   },
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   image: {
     marginVertical: 20,
     width: "auto",
-    height: 300,
+    height: 200,
     alignSelf: "center",
   },
   disclaimer: {
@@ -77,6 +78,32 @@ const styles = StyleSheet.create({
     borderTopColor: "#e0e0e0",
     paddingTop: 20,
   },
+
+  watermark: {
+    position: "absolute",
+    bottom: "30%",
+    left: "20%",
+    opacity: 0.1,
+    transform: "rotate(-45deg)",
+  },
+  watermarkText: {
+    fontSize: 48,
+    color: "#666",
+    fontWeight: "bold",
+  },
+  credit: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    fontSize: 10,
+    color: "#2c5f2d",
+  },
+  creditLink: {
+    color: "#2c5f2d",
+    textDecoration: "none",
+  },
 });
 
 // Create PDF Template component
@@ -86,17 +113,76 @@ export const PlantPDFTemplate: React.FC<{
 }> = ({ analysis, image }) => {
   const sections = analysis.split("\n").filter((line) => line.trim());
 
+  //   return (
+  //     <Document>
+  //       <Page size="A4" style={styles.page}>
+  //         <Text style={styles.title}>Plant Analysis Report</Text>
+
+  //         {/* {image && (
+  //           <Image src={image || "/placeholder.svg"} style={styles.image} />
+  //         )} */}
+  //         {image && <Image src={image} style={styles.image} />}
+  //         {sections.map((line, index) => {
+  //           // Section headers (##)
+  //           if (line.startsWith("##")) {
+  //             return (
+  //               <View key={index} style={styles.section}>
+  //                 <Text style={styles.sectionTitle}>
+  //                   {line.replace("##", "").trim()}
+  //                 </Text>
+  //               </View>
+  //             );
+  //           }
+
+  //           // List items (-)
+  //           if (line.startsWith("-")) {
+  //             return (
+  //               <Text key={index} style={[styles.content, styles.listItem]}>
+  //                 {`• ${line.substring(1).trim()}`}
+  //               </Text>
+  //             );
+  //           }
+
+  //           // Regular text
+  //           return (
+  //             <Text key={index} style={styles.content}>
+  //               {line.trim()}
+  //             </Text>
+  //           );
+  //         })}
+
+  //         <Text style={styles.disclaimer}>
+  //           This report was automatically generated and should be verified by a
+  //           professional.
+  //         </Text>
+  //         <Text style={styles.credit}>
+  //           Credit:{" "}
+  //           <a
+  //             target="_blank"
+  //             rel="noreferrer"
+  //             href="https
+  // ://monoedafrica.com/"
+  //           >
+  //             Monoed Africa
+  //           </a>
+  //         </Text>
+  //       </Page>
+  //     </Document>
+  //   );
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Watermark Container */}
+        <View style={styles.watermark}>
+          <Text style={styles.watermarkText}>Monoed Africa</Text>
+        </View>
+
         <Text style={styles.title}>Plant Analysis Report</Text>
 
-        {/* {image && (
-          <Image src={image || "/placeholder.svg"} style={styles.image} />
-        )} */}
         {image && <Image src={image} style={styles.image} />}
+
         {sections.map((line, index) => {
-          // Section headers (##)
           if (line.startsWith("##")) {
             return (
               <View key={index} style={styles.section}>
@@ -107,7 +193,6 @@ export const PlantPDFTemplate: React.FC<{
             );
           }
 
-          // List items (-)
           if (line.startsWith("-")) {
             return (
               <Text key={index} style={[styles.content, styles.listItem]}>
@@ -116,7 +201,6 @@ export const PlantPDFTemplate: React.FC<{
             );
           }
 
-          // Regular text
           return (
             <Text key={index} style={styles.content}>
               {line.trim()}
@@ -125,9 +209,16 @@ export const PlantPDFTemplate: React.FC<{
         })}
 
         <Text style={styles.disclaimer}>
-          This report was automatically generated and should be verified by a
-          professional.
+          This automated report requires professional verification for academic
+          or medicinal use.
         </Text>
+
+        {/* Updated Credit Section */}
+        <View style={styles.credit}>
+          <Text>
+            Report generated by Monoed Africa {new Date().getFullYear()}
+          </Text>
+        </View>
       </Page>
     </Document>
   );

@@ -54,17 +54,6 @@
 //     );
 //   }
 // }import { GoogleGenerativeAI } from "@google/generative-ai"
-import { formatAnalysisText } from "@/lib/utils";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
-
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is not set in environment variables");
-}
-// console.log(apiKey);
-
-const genAI = new GoogleGenerativeAI(apiKey);
 
 // export async function POST(request: Request) {
 //   try {
@@ -164,7 +153,17 @@ const genAI = new GoogleGenerativeAI(apiKey);
 //     );
 //   }
 // }
+import { formatAnalysisText } from "@/lib/utils";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
 
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error("GEMINI_API_KEY is not set in environment variables");
+}
+// console.log(apiKey);
+
+const genAI = new GoogleGenerativeAI(apiKey);
 export async function POST(request: Request) {
   try {
     const { image } = await request.json();
@@ -176,40 +175,99 @@ export async function POST(request: Request) {
     // Initialize the model
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Please analyze this plant image and format the response in clean markdown structure:
+    //     const prompt = `Please analyze this plant image and format the response in clean markdown structure:
 
-# Plant Analysis Report
+    // # Plant Analysis Report
 
-## 1. Identification Details
-- Common Name: [provide name]
-- Scientific Name: [provide name]
-- Family: [provide family]
-- African Names: [list known names by region]
+    // ## 1. Identification Details
+    // - Common Name: [provide name]
+    // - Scientific Name: [provide name]
+    // - Family: [provide family]
+    // - African Names: [list known names by region]
 
-## 2. Plant Description
-- Height/Size: [specify]
-- Physical Characteristics: [describe leaves, flowers, etc.]
-- Growth Pattern: [describe how it grows]
-- Notable Features: [any distinctive characteristics]
+    // ## 2. Plant Description
+    // - Height/Size: [specify]
+    // - Physical Characteristics: [describe leaves, flowers, etc.]
+    // - Growth Pattern: [describe how it grows]
+    // - Notable Features: [any distinctive characteristics]
 
-## 3. Medicinal Properties
-- Traditional Uses: [list uses]
-- Active Compounds: [if known]
-- Health Benefits: [list verified benefits]
-- Usage Precautions: [list any warnings]
+    // ## 3. Medicinal Properties
+    // - Traditional Uses: [list uses]
+    // - Active Compounds: [if known]
+    // - Health Benefits: [list verified benefits]
+    // - Usage Precautions: [list any warnings]
 
-## 4. Additional Information
-- Growing Requirements: [soil, water, climate]
-- Economic Importance: [describe value]
-- Cultural Significance: [describe importance]
-- Conservation Status: [if applicable]
+    // ## 4. Additional Information
+    // - Growing Requirements: [soil, water, climate]
+    // - Economic Importance: [describe value]
+    // - Cultural Significance: [describe importance]
+    // - Conservation Status: [if applicable]
 
-## 5. Research Topics
-1. [First research topic with brief explanation]
-2. [Second research topic with brief explanation]
-3. [Third research topic with brief explanation]
+    // ## 5. Research Topics
+    // 1. [First research topic with brief explanation]
+    // 2. [Second research topic with brief explanation]
+    // 3. [Third research topic with brief explanation]
 
-Format this exactly as shown, maintaining markdown structure.`;
+    // Format this exactly as shown, maintaining markdown structure.`;
+
+    const prompt = `Analyze this plant image and provide information in strict markdown format following this structure:
+
+# [Common Name] ([Scientific Name]) Analysis
+
+## 1. Plant Identification
+- **Common Name**: 
+- **Scientific Name**: 
+
+## 2. Physical Description
+- **Morphological Characteristics**:
+  - Growth pattern:
+  - Leaf structure:
+  - Flower features:
+  - Stem characteristics:
+  - Special adaptations:
+
+## 3. Health Assessment
+- **Current Health Status**:
+  - Vitality indicators:
+  - Common ailments/diseases:
+  - Pest susceptibility:
+
+## 4. Origin & Habitat
+- **Natural Habitat**:
+  - Geographical origin:
+  - Ecosystem type:
+  - Climate requirements:
+
+## 5. Medicinal Properties
+- **Therapeutic Applications**:
+  - Traditional remedies:
+  - Modern medical uses:
+  - Active compounds:
+  - Preparation methods:
+
+## 6. Cultivation Guide
+- **Growth Requirements**:
+  - Soil type:
+  - Water needs:
+  - Light exposure:
+  - Temperature range:
+
+## 7. Socio-Economic Value
+- **Economic Importance**:
+- **Cultural Significance**:
+
+## 8. Research Opportunities
+1. **Project Idea 1**: [Title] - [Brief description]
+2. **Project Idea 2**: [Title] - [Brief description]
+3. **Project Idea 3**: [Title] - [Brief description]
+
+**Instructions**:
+1. Use only ## headers and -/1. list formats
+2. Skip entire sections if information is unavailable
+3. Be specific with measurements (metric units)
+4. Include regional names if applicable
+5. Prioritize verifiable scientific information
+6. For research topics, focus on sustainable applications`;
 
     // const result = await model.generateContent({
     //   contents: [
